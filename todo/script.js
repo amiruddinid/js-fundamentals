@@ -1,52 +1,53 @@
-const todolist = [];
 let input = document.getElementById("input"), //DOM
     button = document.getElementById("add"), //DOM
     list = document.getElementById('list'); //DOM
 
-button.addEventListener('click', add); //DOM
-
-function render(){
-    list.innerHTML = "";
-    for(let i = 0; i < todolist.length; i++){
-        let text = todolist[i].complete ? `<s>${todolist[i].text}</s>` 
-        : todolist[i].text
-        list.innerHTML += 
-        `<li> ${text} 
-            <button onclick="todolist[${i}].onEdit(${i},event)">✏️</button>
-            <button onclick="todolist[${i}].onRemove(${i})">❌</button>
-            <button onclick="todolist[${i}].onComplete()">Complete</button>
-        </li>
-        ` //DOM
-        // list.innerHTML += '<li>' + todolist[i] + '</li>'
-    }
-}
-
-function add(){
-    const val = input.value;
-    const newTodo = {
-        text:val,
-        complete:false,
-        onComplete:function(){
-            this.complete = true;
-            render();
-        },
-        onEdit:function(i, e){
-            const el = `<input type="text" value="${this.text}" 
-            onkeypress="todolist[${i}].onSave(event)">`
-            e.target.parentNode.innerHTML = el;
-        },
-        onSave:function(e){
-            if(e.which === 13){
-                const val = e.target.value; //DOM
-                this.text = val;
-                render();
-            }
-        },
-        onRemove:function(i){
-            todolist.splice(i, 1);
-            render();
+const todoApp = {
+    data:[],
+    render: function(){
+        list.innerHTML = "";
+        for(let i = 0; i < this.data.length; i++){
+            let text = this.data[i].complete ? `<s>${this.data[i].text}</s>` 
+            : this.data[i].text
+            list.innerHTML += 
+            `<li> ${text} 
+                <button onclick="todoApp.onEdit(${i}, event)">✏️</button>
+                <button onclick="todoApp.onRemove(${i})">❌</button>
+                <button onclick="todoApp.onComplete(${i})">Complete</button>
+            </li>
+            ` //DOM
+            // list.innerHTML += '<li>' + todolist[i] + '</li>'
         }
-    };
-    todolist.push(newTodo);
-    render();
+    },
+    add: function(){
+        const val = input.value;
+        const newTodo = {
+            text:val,
+            complete:false,
+        };
+        todoApp.data.push(newTodo);
+        todoApp.render();
+    },
+    onEdit:function(i, e){
+        const el = `<input type="text" value="${this.data[i].text}" 
+        onkeypress="this.onSave(${i}, event)">`
+        e.target.parentNode.innerHTML = el;
+    },
+    onSave:function(i, e){
+        if(e.which === 13){
+            const val = e.target.value; //DOM
+            this.data[i].text = val;
+            this.render();
+        }
+    },
+    onRemove:function(i){
+        this.data.splice(i, 1);
+        this.render();
+    },
+    onComplete:function(i){
+        this.data[i].complete = true;
+        this.render();
+    },
 }
+
+button.addEventListener('click', todoApp.add); //DOM
