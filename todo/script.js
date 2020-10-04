@@ -30,7 +30,7 @@ const todoApp = {
     },
     onEdit:function(i, e){
         const el = `<input type="text" value="${this.data[i].text}" 
-        onkeypress="this.onSave(${i}, event)">`
+        onkeypress="todoApp.onSave(${i}, event)">`
         e.target.parentNode.innerHTML = el;
     },
     onSave:function(i, e){
